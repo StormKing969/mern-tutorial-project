@@ -3,6 +3,11 @@ import Axios from "axios";
 
 function App() {
   const [userList, setUserList] = useState([]);
+  const [userInput, setUserInput] = useState({
+    name: "",
+    age: 0,
+    username: ""
+  })
 
   useEffect(() => {
     Axios.get("http://localhost:5000/getUsers").then((response) => {
@@ -11,10 +16,27 @@ function App() {
   }, []);
 
   const createUser = () => {
-    Axios.post("http://localhost:5000/createUser").then((response) => {
-      alert("User Created");
+    Axios.post("http://localhost:5000/createUser", {
+      name: userInput.name,
+      age: userInput.age,
+      username: userInput.username,
+    }).then((response) => {
+      alert("User Created")
     });
   };
+
+  function getUserInfo(event) {
+    const {name, value} = event.target
+
+    setUserInput(previous => {
+      return {
+        ...previous,
+        [name]: value
+      }
+    })
+  }
+
+  console.log(userInput.name);
 
   return (
     <div className="App">
@@ -31,9 +53,9 @@ function App() {
       </div>
 
       <div>
-        <input type="text" placeholder="Name" />
-        <input type="number" placeholder="Age" />
-        <input type="text" placeholder="Username" />
+        <input type="text" name="name" placeholder="Name" onChange={getUserInfo} />
+        <input type="number" name="age" placeholder="Age" onChange={getUserInfo} />
+        <input type="text" name="username" placeholder="Username" onChange={getUserInfo} />
         <button onClick={createUser}>Create User</button>
       </div>
     </div>
